@@ -2,10 +2,24 @@
 
 import { useDarkMode } from "@/context/DarkModeContext";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 function Hero() {
     const { darkmode } = useDarkMode()
     const router = useRouter()
+    const [isClient, setIsClient] = useState(false)
+    const [particles, setParticles] = useState<{ id: number; left: number; top: number; duration: number }[]>([])
+
+    useEffect(() => {
+        setIsClient(true)
+        const newParticles = [...Array(6)].map((_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            duration: 3 + Math.random() * 2
+        }))
+        setParticles(newParticles)
+    }, [])
 
     return (
         <div className={`relative py-24 min-h-dvh overflow-hidden ${darkmode
@@ -111,23 +125,25 @@ function Hero() {
                 </div>
             </div>
 
-            {/* Partículas flotantes */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(6)].map((_, i) => (
-                    <div
-                        key={i}
-                        className={`absolute w-1 h-1 rounded-full animate-float ${
-                            darkmode ? "bg-purple-400" : "bg-blue-400"
-                        }`}
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animationDelay: `${i * 0.5}s`,
-                            animationDuration: `${3 + Math.random() * 2}s`
-                        }}
-                    ></div>
-                ))}
-            </div>
+            {/* Partículas flotantes - Solo se renderizan en el cliente */}
+            {isClient && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {particles.map((particle) => (
+                        <div
+                            key={particle.id}
+                            className={`absolute w-1 h-1 rounded-full animate-float ${
+                                darkmode ? "bg-purple-400" : "bg-blue-400"
+                            }`}
+                            style={{
+                                left: `${particle.left}%`,
+                                top: `${particle.top}%`,
+                                animationDelay: `${particle.id * 0.5}s`,
+                                animationDuration: `${particle.duration}s`
+                            }}
+                        ></div>
+                    ))}
+                </div>
+            )}
 
             {/* Gradiente de transición hacia abajo */}
             <div className={`absolute bottom-0 left-0 right-0 h-32 ${

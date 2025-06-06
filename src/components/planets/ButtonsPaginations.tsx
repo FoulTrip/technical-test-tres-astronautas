@@ -1,3 +1,5 @@
+"use client"
+
 import { PaginationProps } from "@/types/planets";
 import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
 

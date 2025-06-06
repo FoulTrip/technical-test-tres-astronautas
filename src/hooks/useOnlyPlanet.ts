@@ -10,6 +10,7 @@ import {
     PlanetDetailState,
     PlanetImageResponse,
 } from '@/types/planets';
+import { useRouter } from 'next/navigation';
 
 /**
  * Zustand store for managing planet detail data
@@ -159,6 +160,32 @@ export function usePlanetData(planetId: string) {
         }
     }, [planetId, fetchPlanetImage]);
 
+    // Helper functions
+    const formatNumber = (num: number): string => {
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
+        return num.toLocaleString()
+    }
+
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return ''
+        try {
+            return new Date(dateString).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })
+        } catch {
+            return dateString
+        }
+    }
+
+    const hasValue = (value: any): boolean => {
+        return value !== null && value !== undefined && value !== 0 && value !== ''
+    }
+
+    const router = useRouter();
+
     return {
         planet, // Fetched planet data
         error, // Error message for planet data fetch
@@ -170,5 +197,9 @@ export function usePlanetData(planetId: string) {
         favorites, // Persisted favorites list
         toggleFavorites, // Function to toggle favorite status
         isFavorite, // Function to check favorite status
+        formatNumber, // Function to format numbers
+        formatDate, // Function to format dates
+        hasValue, // Function to check if a value is present
+        router
     };
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import { SearchBarProps } from "@/types/planets";
 import { TbPlanet, TbSortAscending, TbSortDescending, TbX } from "react-icons/tb";
 

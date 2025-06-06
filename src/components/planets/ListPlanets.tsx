@@ -6,7 +6,15 @@ import { SearchBar } from "./searchBar";
 import { usePlanets } from "@/hooks/usePlanets";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { useDarkMode } from "@/context/DarkModeContext";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+
+type Particle = {
+    id: number;
+    left: number;
+    top: number;
+    animationDelay: number;
+    animationDuration: number;
+};
 
 function PlanetListContent() {
     const { darkmode } = useDarkMode();
@@ -22,6 +30,22 @@ function PlanetListContent() {
         handleSearch,
         isInitialized
     } = usePlanets();
+
+    const [particles, setParticles] = useState<Particle[]>([]);
+    const [isClient, setIsClient] = useState(false);
+
+    // Generar partículas solo en el cliente
+    useEffect(() => {
+        setIsClient(true);
+        const generatedParticles = [...Array(8)].map((_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            animationDelay: i * 0.7,
+            animationDuration: 4 + Math.random() * 3
+        }));
+        setParticles(generatedParticles);
+    }, []);
 
     // Mostrar loading mientras se inicializa desde URL
     if (!isInitialized) {
@@ -129,22 +153,24 @@ function PlanetListContent() {
                     }`}></div>
             </div>
 
-            {/* Partículas flotantes - mismo estilo que Hero */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(8)].map((_, i) => (
-                    <div
-                        key={i}
-                        className={`absolute w-1 h-1 rounded-full animate-float ${darkmode ? "bg-purple-400/60" : "bg-blue-400/60"
-                            }`}
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animationDelay: `${i * 0.7}s`,
-                            animationDuration: `${4 + Math.random() * 3}s`
-                        }}
-                    ></div>
-                ))}
-            </div>
+            {/* Partículas flotantes - generadas solo en el cliente */}
+            {isClient && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {particles.map((particle) => (
+                        <div
+                            key={particle.id}
+                            className={`absolute w-1 h-1 rounded-full animate-float ${darkmode ? "bg-purple-400/60" : "bg-blue-400/60"
+                                }`}
+                            style={{
+                                left: `${particle.left}%`,
+                                top: `${particle.top}%`,
+                                animationDelay: `${particle.animationDelay}s`,
+                                animationDuration: `${particle.animationDuration}s`
+                            }}
+                        ></div>
+                    ))}
+                </div>
+            )}
 
             {/* Contenido principal */}
             <div className="relative z-10 pb-20 px-[5%] pt-32 md:pt-32">

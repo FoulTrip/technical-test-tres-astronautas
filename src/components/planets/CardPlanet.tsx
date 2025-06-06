@@ -28,6 +28,17 @@ export default function PlanetCard({ planet }: PlanetCardProps) {
         }
     };
 
+    // Function to convert Kelvin to Celsius
+    const kelvinToCelsius = (kelvin: number): number => {
+        return Math.round(kelvin - 273.15);
+    };
+
+    // Function to format temperature display
+    const formatTemperature = (kelvin: number): string => {
+        const celsius = kelvinToCelsius(kelvin);
+        return `${celsius}°C`;
+    };
+
     return (
         <div
             className="group relative border border-gray-200/50 dark:border-gray-800/50 hover:border-gray-300 hover:dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-gray-200/20 dark:hover:shadow-gray-900/20 hover:-translate-y-1 bg-white dark:bg-gray-950/50 backdrop-blur-sm"
@@ -86,10 +97,10 @@ export default function PlanetCard({ planet }: PlanetCardProps) {
                                 </p>
                             )}
 
-                            {/* Additional info - only show if available */}
+                            {/* Temperature info - converted to Celsius */}
                             {planet.temperature && (
                                 <p className="text-xs text-gray-500 dark:text-gray-500">
-                                    Temperatura: {planet.temperature}K
+                                    Temperatura: {formatTemperature(planet.temperature)}
                                 </p>
                             )}
                         </div>
