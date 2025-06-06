@@ -1,14 +1,16 @@
 "use client"
 
 import { useDarkMode } from "@/context/DarkModeContext";
+import { useRouter } from "next/navigation";
 
 function Hero() {
     const { darkmode } = useDarkMode()
+    const router = useRouter()
 
     return (
         <div className={`relative py-24 min-h-dvh overflow-hidden ${darkmode
-            ? "bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
-            : "bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100"
+            ? "bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900"
+            : "bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100"
             }`}>
             
             {/* Elementos geométricos flotantes */}
@@ -98,7 +100,7 @@ function Hero() {
 
                 {/* Botón CTA moderno */}
                 <div className="flex justify-center mt-12">
-                    <button className={`group relative px-8 py-4 rounded-full font-medium transition-all duration-300 ${
+                    <button onClick={() => router.push("#planet-list")} className={`group relative px-8 py-4 rounded-full font-medium transition-all duration-300 ${
                         darkmode 
                             ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white hover:from-purple-500 hover:to-cyan-500" 
                             : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500"
@@ -126,6 +128,13 @@ function Hero() {
                     ></div>
                 ))}
             </div>
+
+            {/* Gradiente de transición hacia abajo */}
+            <div className={`absolute bottom-0 left-0 right-0 h-32 ${
+                darkmode 
+                    ? "bg-gradient-to-b from-transparent to-slate-900"
+                    : "bg-gradient-to-b from-transparent to-slate-50"
+            } pointer-events-none`}></div>
         </div>
     )
 }

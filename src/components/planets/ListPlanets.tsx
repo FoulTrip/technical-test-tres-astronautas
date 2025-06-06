@@ -6,8 +6,9 @@ import { SearchBar } from "./searchBar";
 import { usePlanets } from "@/hooks/usePlanets";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { useDarkMode } from "@/context/DarkModeContext";
+import { Suspense } from "react";
 
-function PlanetList() {
+function PlanetListContent() {
     const { darkmode } = useDarkMode();
     const {
         planets,
@@ -18,14 +19,51 @@ function PlanetList() {
         handleNextPage,
         handlePreviousPage,
         switchOrderDesc,
-        handleSearch
+        handleSearch,
+        isInitialized
     } = usePlanets();
 
+    // Mostrar loading mientras se inicializa desde URL
+    if (!isInitialized) {
+        return (
+            <div className={`w-full relative min-h-screen ${darkmode
+                ? "bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900"
+                : "bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100"
+                }`}>
+                <div className="grid place-content-center h-screen">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="relative">
+                            <div className={`w-16 h-16 border-4 rounded-full animate-spin ${darkmode
+                                ? "border-purple-500/20 border-t-purple-500"
+                                : "border-blue-500/20 border-t-blue-500"
+                                }`}></div>
+                            <div className={`absolute inset-2 w-12 h-12 border-4 rounded-full animate-spin ${darkmode
+                                ? "border-cyan-500/20 border-t-cyan-500"
+                                : "border-indigo-500/20 border-t-indigo-500"
+                                }`} style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                        </div>
+                        <div className={`text-xl font-light tracking-wide ${darkmode ? "text-slate-300" : "text-slate-600"
+                            }`}>
+                            Inicializando explorador...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className={`w-full md:pt-32 pt-20 relative min-h-screen ${darkmode
-            ? "bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
-            : "bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100"
-            }`}>
+        <div className={`w-full relative min-h-screen ${darkmode
+            ? "bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900"
+            : "bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100"
+            }`} id="planet-list">
+
+            {/* Gradiente de transición desde arriba */}
+            <div className={`absolute top-0 left-0 right-0 h-32 ${darkmode
+                ? "bg-gradient-to-b from-slate-900 to-transparent"
+                : "bg-gradient-to-b from-slate-50 to-transparent"
+                } pointer-events-none z-20`}></div>
+
             {/* Elementos decorativos de fondo - mismo estilo que Hero */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {/* Elementos geométricos abstractos */}
@@ -109,7 +147,7 @@ function PlanetList() {
             </div>
 
             {/* Contenido principal */}
-            <div className="relative z-10 pb-20 px-[5%]">
+            <div className="relative z-10 pb-20 px-[5%] pt-32 md:pt-32">
                 {/* Barra de búsqueda con contenedor glassmorphism - colores coherentes */}
                 <div >
                     <SearchBar
@@ -127,12 +165,12 @@ function PlanetList() {
                             {/* Spinner espacial - colores coherentes */}
                             <div className="relative">
                                 <div className={`w-16 h-16 border-4 rounded-full animate-spin ${darkmode
-                                        ? "border-purple-500/20 border-t-purple-500"
-                                        : "border-blue-500/20 border-t-blue-500"
+                                    ? "border-purple-500/20 border-t-purple-500"
+                                    : "border-blue-500/20 border-t-blue-500"
                                     }`}></div>
                                 <div className={`absolute inset-2 w-12 h-12 border-4 rounded-full animate-spin ${darkmode
-                                        ? "border-cyan-500/20 border-t-cyan-500"
-                                        : "border-indigo-500/20 border-t-indigo-500"
+                                    ? "border-cyan-500/20 border-t-cyan-500"
+                                    : "border-indigo-500/20 border-t-indigo-500"
                                     }`} style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
                             </div>
                             <div className={`text-xl font-light tracking-wide ${darkmode ? "text-slate-300" : "text-slate-600"
@@ -167,12 +205,12 @@ function PlanetList() {
                                     {/* Icono con efecto */}
                                     <div className="relative">
                                         <div className={`absolute inset-0 rounded-full blur-xl ${darkmode
-                                                ? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20"
-                                                : "bg-gradient-to-r from-blue-500/20 to-indigo-500/20"
+                                            ? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20"
+                                            : "bg-gradient-to-r from-blue-500/20 to-indigo-500/20"
                                             }`}></div>
                                         <div className={`relative backdrop-blur-sm rounded-full p-6 border ${darkmode
-                                                ? "bg-white/10 border-white/20"
-                                                : "bg-white/20 border-white/30"
+                                            ? "bg-white/10 border-white/20"
+                                            : "bg-white/20 border-white/30"
                                             }`}>
                                             <PiWarningCircleFill size={48} className={
                                                 darkmode ? "text-slate-400" : "text-slate-500"
@@ -203,8 +241,8 @@ function PlanetList() {
                                                 handleSearch(event);
                                             }}
                                             className={`px-6 py-3 backdrop-blur-sm rounded-xl border transition-all duration-300 transform hover:scale-105 ${darkmode
-                                                    ? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-white/20 text-slate-300 hover:from-purple-500/30 hover:to-cyan-500/30"
-                                                    : "bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border-white/30 text-slate-700 hover:from-blue-500/30 hover:to-indigo-500/30"
+                                                ? "bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-white/20 text-slate-300 hover:from-purple-500/30 hover:to-cyan-500/30"
+                                                : "bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border-white/30 text-slate-700 hover:from-blue-500/30 hover:to-indigo-500/30"
                                                 }`}
                                         >
                                             Ver todos los planetas
@@ -229,6 +267,30 @@ function PlanetList() {
                 )}
             </div>
         </div>
+    );
+}
+
+// Componente principal envuelto en Suspense para manejar useSearchParams
+function PlanetList() {
+    return (
+        <Suspense fallback={
+            <div className="w-full relative min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+                <div className="grid place-content-center h-screen">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="relative">
+                            <div className="w-16 h-16 border-4 rounded-full animate-spin border-purple-500/20 border-t-purple-500"></div>
+                            <div className="absolute inset-2 w-12 h-12 border-4 rounded-full animate-spin border-cyan-500/20 border-t-cyan-500"
+                                style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                        </div>
+                        <div className="text-xl font-light tracking-wide text-slate-300">
+                            Cargando explorador...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }>
+            <PlanetListContent />
+        </Suspense>
     );
 }
 

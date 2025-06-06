@@ -84,7 +84,7 @@ function NavBar() {
                                     ? "bg-transparent hover:bg-white/5 text-white/70 hover:text-white/90"
                                     : "bg-transparent hover:bg-black/5 text-gray-800/70 hover:text-gray-900"
                         }`}
-                        onClick={() => router.push("https://github.com/FoulTrip/tres_astronautas_app_test")}
+                        onClick={() => router.push("https://github.com/FoulTrip/technical-test-tres-astronautas")}
                     >
                         <div className="relative z-10">
                             <IoLogoGithub size={20} className="transition-transform duration-300 group-hover:scale-110" />
